@@ -3,22 +3,23 @@ import { Document } from 'mongoose';
 
 export type OrderDocument = Order & Document;
 
-@Schema({ timestamps: true })
+@Schema()
 export class Order {
   @Prop({ required: true })
-  items: string[];
+  items: any[]; // menú
 
-  @Prop({ required: true }) // ID del usuario en PostgreSQL
-  userId: number;
+  @Prop({ required: true })
+  userId: number; // referencia a PostgreSQL
 
-  @Prop({ required: true }) // ID de la mesa en PostgreSQL
-  tableId: number;
-
-  @Prop({ required: true }) // ID del estado de orden en PostgreSQL
+  @Prop({ required: true })
   statusId: number;
 
-  @Prop({ required: true }) // ID del pago en PostgreSQL
+  @Prop({ required: true })
   paymentId: number;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
 }
+
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

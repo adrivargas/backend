@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UnauthorizedException } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -17,17 +19,11 @@ export class AuthController {
     if (user && await bcrypt.compare(body.password, user.password)) {
       return this.authService.login(user);
     }
-    throw new Error('Credenciales inválidas');
+    throw new UnauthorizedException('Credenciales inválidas');
   }
 
-  @Post('register')
-  async register(@Body() body: { username: string; password: string }) {
-    const hashed = await bcrypt.hash(body.password, 10);
-    const newUser = {
-      username: body.username,
-      password: hashed,
-      role: 'user', // Forzamos el rol "user"
-    };
-  return this.usersService.create(newUser);
+    @Post('register')
+  async register(@Body() dto: CreateUserDto) {
+    return this.authService.register(dto);
   }
 }
