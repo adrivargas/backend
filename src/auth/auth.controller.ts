@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UnauthorizedException } from '@nestjs/common';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -17,12 +18,14 @@ export class AuthController {
   async login(@Body() body: { username: string; password: string }) {
     const user = await this.usersService.findByUsername(body.username);
     if (user && await bcrypt.compare(body.password, user.password)) {
-      return this.authService.login(user);
+      return this.authService.login(user); // retorna { access_token, user }
     }
     throw new UnauthorizedException('Credenciales inválidas');
   }
 
-    @Post('register')
+
+  @Public() // ✅ esto es CLAVE para que no pida token
+  @Post('register')
   async register(@Body() dto: CreateUserDto) {
     return this.authService.register(dto);
   }
