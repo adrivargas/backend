@@ -22,17 +22,16 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'; // Asegúrate que e
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot(process.env.MONGO_URI as string),
+    MongooseModule.forRoot(process.env.MONGO_URI!),
 
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
         type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: parseInt(config.get('DB_PORT') || '5432'),
-        username: config.get('DB_USER'),
-        password: config.get('DB_PASS'),
-        database: config.get('DB_NAME'),
+        url: config.get('DATABASE_URL'),
+        ssl: {
+          rejectUnauthorized: false,
+        },
         entities: [User, Table, Payment, OrderStatus],
         synchronize: true,
       }),
