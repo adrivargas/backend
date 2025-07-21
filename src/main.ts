@@ -14,6 +14,7 @@ async function bootstrap() {
       'http://localhost:5173',                  // ✅ para desarrollo local
     ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   });
 
   const PORT = process.env.PORT || 3000;

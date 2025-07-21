@@ -1,4 +1,3 @@
-// auth.service.ts
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -13,24 +12,36 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async validateUser(username: string, password: string): Promise<any> {
+    const user = await this.usersService.findByUsername(username);
+
+    if (user && await bcrypt.compare(password, user.password)) {
+      const { password, ...result } = user;
+      return result;
+    }
+
+    return null;
+  }
+
   async register(dto: CreateUserDto) {
-    // Verifica si ya existe el username
     const userExistente = await this.usersService.findByUsername(dto.username);
     if (userExistente) {
       throw new Error('El nombre de usuario ya está en uso.');
     }
 
-    // Hashea la contraseña
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    // Crea el usuario
     const nuevoUsuario = await this.usersService.create({
       ...dto,
       password: hashedPassword,
     });
 
-    // Opcional: retorna JWT
-    const payload = { username: nuevoUsuario.username, sub: nuevoUsuario.id, role: nuevoUsuario.role };
+    const payload = {
+      username: nuevoUsuario.username,
+      sub: nuevoUsuario.id,
+      role: nuevoUsuario.role,
+    };
+
     return {
       message: 'Usuario registrado correctamente',
       access_token: this.jwtService.sign(payload),
@@ -39,16 +50,19 @@ export class AuthService {
   }
 
   async login(user: User) {
-  const payload = { username: user.username, sub: user.id, role: user.role };
-
-  return {
-    access_token: this.jwtService.sign(payload),
-    user: {
-      id: user.id,
+    const payload = {
       username: user.username,
+      sub: user.id,
       role: user.role,
-    },
-  };
-}
+    };
 
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      },
+    };
+  }
 }

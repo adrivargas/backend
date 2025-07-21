@@ -47,11 +47,11 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'; // Asegúrate que e
     OrdersModule,
     AuthModule,
   ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard, // ✅ Esto lo vuelve global
-    },
-  ],
+  // providers: [
+  //   {
+  //     provide: APP_GUARD,
+  //     useClass: JwtAuthGuard, // ✅ Esto lo vuelve global
+  //   },
+  // ],
 })
 export class AppModule {}
