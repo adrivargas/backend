@@ -32,7 +32,8 @@ export class MenuItemsController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id') id: string) {
     return this.menuItemsService.remove(id);
   }
+
 }
