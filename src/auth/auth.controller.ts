@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { Public } from './decorators/public.decorator'; // corrige si la ruta es incorrecta
 import { User } from 'src/users/user.entity';
-
+import { LoginDto } from './dto/login.dto';
 @Controller('auth') 
 export class AuthController {
   userRepository: any;
@@ -16,14 +16,17 @@ export class AuthController {
   }
 
   @Post('login')
-  @Public()
-  async login(@Body() dto: { username: string; password: string }) {
-   const user = await this.authService.validateUser(dto.username, dto.password);
-   if (!user) {
-    throw new UnauthorizedException('Credenciales incorrectas');
+  async login(@Body() loginDto: LoginDto) {
+    const user = await this.authService.validateUser(
+    loginDto.username,
+    loginDto.password,
+  );
+  if (!user) {
+    throw new UnauthorizedException('Usuario o contraseña incorrectos');
   }
-    return this.authService.login(user);
-  }
+
+  return this.authService.login(user);
+}
 
 
   async findByCorreo(correo: string): Promise<User | undefined> {
