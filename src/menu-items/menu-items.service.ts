@@ -21,17 +21,11 @@ export class MenuItemsService {
     const item = this.menuItemRepo.create(dto);
     return this.menuItemRepo.save(item);
   }
-  async update(id: number, updateData: Partial<MenuItem>): Promise<MenuItem> {
-  await this.menuItemRepo.update(id, updateData);
-
-  const updatedItem = await this.menuItemRepo.findOne({ where: { id } });
-
-  if (!updatedItem) {
-    throw new NotFoundException(`Item con id ${id} no encontrado`);
+  async update(id: string, updateData: Partial<MenuItem>): Promise<MenuItem> {
+  await this.menuItemModel.updateOne({ _id: id }, updateData);
+  return this.menuItemModel.findById(id);
   }
 
-  return updatedItem;
-  }
   async remove(id: number): Promise<void> {
   await this.menuItemRepo.delete(id);
   }

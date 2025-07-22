@@ -16,13 +16,15 @@ export class MenuItemsController {
     return this.menuItemsService.create(createMenuItemDto);
   }
   
- @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateData: any) {
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateData: any) {
     return this.menuItemsService.update(id, updateData);
   }
+
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.menuItemsService.remove(id);
   }
+  
 }
