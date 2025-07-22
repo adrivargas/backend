@@ -6,6 +6,14 @@ import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
+  userRepository: any;
+  update(id: number, updatedUser: Partial<User>): User | PromiseLike<User> {
+    throw new Error('Method not implemented.');
+  }
+  async findOneById(id: number): Promise<User | null> {
+  return await this.userRepository.findOne({ where: { id } });
+  }
+
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
   ) {}

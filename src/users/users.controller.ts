@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Param,
+  Body,
+  UseGuards,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -16,9 +25,22 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin') // ✅ Solo admins pueden usar esta ruta
+  @Roles('admin')
   @Post()
   create(@Body() user: Partial<User>): Promise<User> {
     return this.usersService.create(user);
   }
+
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+@Roles('admin')
+@Put(':id')
+async update(
+  @Param('id') id: number,
+  @Body() updatedUser: Partial<User>
+): Promise<User> {
+  const user = await this.usersService.findOneById(id);
+  if (!user) throw new NotFoundException('Usuario no encontrado');
+  return this.usersService.update(id, updatedUser);
+}
+
 }
