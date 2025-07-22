@@ -13,6 +13,8 @@ import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/decorators/roles.guard';
+import { UpdateUserDto } from './dto/update-user.dto'; // ✅
+import { CreateUserDto } from './dto/create-user.dto'; // opcional
 
 @Controller('users')
 export class UsersController {
@@ -27,20 +29,19 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @Post()
-  create(@Body() user: Partial<User>): Promise<User> {
+  create(@Body() user: CreateUserDto): Promise<User> {
     return this.usersService.create(user);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles('admin')
-@Put(':id')
-async update(
-  @Param('id') id: number,
-  @Body() updatedUser: Partial<User>
-): Promise<User> {
-  const user = await this.usersService.findOneById(id);
-  if (!user) throw new NotFoundException('Usuario no encontrado');
-  return this.usersService.update(id, updatedUser);
-}
-
+  @Roles('admin')
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() updatedUser: UpdateUserDto
+  ): Promise<User> {
+    const user = await this.usersService.findOneById(id);
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return this.usersService.update(id, updatedUser);
+  }
 }
