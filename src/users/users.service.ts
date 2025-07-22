@@ -31,8 +31,9 @@ export class UsersService {
   return this.repo.findOne({ where: { username } });
   }
 
-  async findByCorreo(correo: string): Promise<User> {
+ async findByCorreo(correo: string): Promise<User> {
   return this.userRepository.findOne({ where: { correo } });
 }
+
 
 }
