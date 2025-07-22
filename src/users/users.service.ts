@@ -6,6 +6,8 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
+  userRepository: any;
+
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
   ) {}
@@ -28,5 +30,9 @@ export class UsersService {
   async findByUsername(username: string): Promise<User | null> {
   return this.repo.findOne({ where: { username } });
   }
+
+  async findByCorreo(correo: string): Promise<User> {
+  return this.userRepository.findOne({ where: { correo } });
+}
 
 }
