@@ -6,8 +6,6 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  userRepository: any;
-
   constructor(
     @InjectRepository(User) private readonly repo: Repository<User>,
   ) {}
@@ -17,23 +15,20 @@ export class UsersService {
   }
 
   async create(data: Partial<User>): Promise<User> {
-  if (!data.password) {
-    throw new Error('Password is required');
-  }
+    if (!data.password) {
+      throw new Error('Password is required');
+    }
 
-  const hashedPassword = await bcrypt.hash(data.password, 10);
-  const user = this.repo.create({ ...data, password: hashedPassword });
-  return this.repo.save(user);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const user = this.repo.create({ ...data, password: hashedPassword });
+    return this.repo.save(user);
   }
-
 
   async findByUsername(username: string): Promise<User | null> {
-  return this.repo.findOne({ where: { username } });
+    return this.repo.findOne({ where: { username } });
   }
 
- async findByCorreo(correo: string): Promise<User> {
-  return this.userRepository.findOne({ where: { correo } });
-}
-
-
+  async findByCorreo(correo: string): Promise<User | null> {
+    return this.repo.findOne({ where: { correo } });
+  }
 }
