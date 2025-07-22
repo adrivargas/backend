@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UsersService {
@@ -19,8 +19,8 @@ export class UsersService {
       throw new Error('Password is required');
     }
 
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const user = this.repo.create({ ...data, password: hashedPassword });
+    // YA NO HACEMOS bcrypt aquí
+    const user = this.repo.create(data);
     return this.repo.save(user);
   }
 
@@ -29,6 +29,6 @@ export class UsersService {
   }
 
   async findByCorreo(correo: string): Promise<User | null> {
-    return this.repo.findOne({ where: { correo } });
-  }
+  return this.repo.findOne({ where: { correo } });
+ }  
 }
