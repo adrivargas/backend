@@ -15,13 +15,8 @@ export class UsersService {
   }
 
   async create(data: Partial<User>): Promise<User> {
-    if (!data.password) {
-      throw new Error('Password is required');
-    }
-
-    // YA NO HACEMOS bcrypt aquí
-    const user = this.repo.create(data);
-    return this.repo.save(user);
+  const user = this.repo.create(data); // SIN volver a hacer bcrypt.hash
+  return this.repo.save(user);
   }
 
   async findByUsername(username: string): Promise<User | null> {
